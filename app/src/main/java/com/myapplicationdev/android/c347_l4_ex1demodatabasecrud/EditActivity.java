@@ -1,6 +1,7 @@
 package com.myapplicationdev.android.c347_l4_ex1demodatabasecrud;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,6 +17,7 @@ public class EditActivity extends AppCompatActivity {
     Button btnUpdate, btnDelete;
     Note data;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

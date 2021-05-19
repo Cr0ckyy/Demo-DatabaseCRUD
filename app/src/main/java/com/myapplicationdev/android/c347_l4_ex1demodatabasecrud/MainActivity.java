@@ -64,22 +64,38 @@ public class MainActivity extends AppCompatActivity {
         btnRetrieve.setOnClickListener(v -> {
             DBHelper dbh = new DBHelper(MainActivity.this);
             al.clear();
-            al.addAll(dbh.getAllNotes());
+
+            String currentContent = etContent.getText().toString();
+
+            // Todo: The edit text will be used to filter keywords.
+            al.addAll(dbh.getAllNotes(currentContent));
             dbh.close();
 
             String txt = "";
-            for (int i = 0; i < al.size(); i++) {
-                Note tmp = al.get(i);
-                txt += "ID:" + tmp.getId() + ", " +
-                        tmp.getNoteContent() + "\n";
+
+            for (Note note : al) {
+                txt += "ID:" + note.getId() + ", " +
+                        note.getNoteContent() + "\n";
             }
+
             tvDBContent.setText(txt);
         });
 
 
         btnEdit.setOnClickListener(v -> {
-            Note target = al.get(0);
 
+
+            // Todo: Keep the application from crashing if the user
+            //  clicks edit before clicking retrieve.
+            if (al.isEmpty()) {
+                DBHelper dbHelper = new DBHelper(MainActivity.this);
+                al.clear();
+                al.addAll(dbHelper.getAllNotes(""));
+                aa.notifyDataSetChanged();
+            }
+
+
+            Note target = al.get(0);
             Intent i = new Intent(MainActivity.this,
                     EditActivity.class);
             i.putExtra("data", target);

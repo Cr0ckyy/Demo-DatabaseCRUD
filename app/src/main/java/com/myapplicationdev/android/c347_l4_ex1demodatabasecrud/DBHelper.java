@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_NOTE = "note";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_NOTE_CONTENT = "note_content";
-
+    private static final String COLUMN_MODULE_NAME = "module_name";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,10 +49,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
+        //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
 
         //To add a column called module_name to an existing table, modify onUpgrade() to execute an SQL statement as below.
-        db.execSQL("ALTER TABLE " + TABLE_NOTE + " ADD COLUMN module_name TEXT ");
+        db.execSQL("ALTER TABLE " + TABLE_NOTE + " ADD COLUMN " + COLUMN_MODULE_NAME + " TEXT ");
 
     }
 
@@ -76,15 +76,22 @@ public class DBHelper extends SQLiteOpenHelper {
     // TODO: Record retrieval from database table
     //  This method will retrieve the records and convert each one into a String.
     //  Following that, the Strings are placed in an ArrayList to be returned.
-    public ArrayList<Note> getAllNotes() {
+    public ArrayList<Note> getAllNotes(String data) {
         ArrayList<Note> notes = new ArrayList<>();
-
-        String selectQuery = "SELECT " + COLUMN_ID + ","
-                + COLUMN_NOTE_CONTENT + " FROM " + TABLE_NOTE;
-
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // Todo: Crude method in retrieving data
+//        String selectQuery = "SELECT " + COLUMN_ID + ","
+//                + COLUMN_NOTE_CONTENT + " FROM " + TABLE_NOTE;
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // Todo: Crude method
+        String[] dbColumns = {COLUMN_ID, COLUMN_NOTE_CONTENT};
+        String dbCondition = COLUMN_NOTE_CONTENT + " Like ?";
+        String[] dbArguments = {"%" + data + "%"};
+        Cursor cursor = db.query(TABLE_NOTE, dbColumns, dbCondition, dbArguments,
+                null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
